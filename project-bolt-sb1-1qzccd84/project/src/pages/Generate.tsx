@@ -1,60 +1,105 @@
-import React, { useState } from "react";
+"use client"
+
+import React, { useState } from "react"
+import { Activity, Brain, Heart, TreesIcon as Lungs, Microscope } from "lucide-react"
 
 export const Generate: React.FC = () => {
-  const [prompt, setPrompt] = useState("");
-  const [responseData, setResponseData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const [prompt, setPrompt] = useState("")
+  const [responseData, setResponseData] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState("general")
 
   const fetchData = async () => {
-    setLoading(true);
-    setResponseData(null);
+    setLoading(true)
+    setResponseData(null)
     try {
       const res = await fetch("http://localhost:5000/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
-      });
-  
-      const data = await res.json();
-      console.log("API Response:", data);
-  
+      })
+
+      const data = await res.json()
+      console.log("API Response:", data)
+
       if (data.image) {
-        setResponseData(`data:image/jpeg;base64,${data.image}`); // Convert Base64 to a valid image source
+        setResponseData(`data:image/jpeg;base64,${data.image}`)
       } else {
-        console.error("Image data not found in API response:", data);
+        console.error("Image data not found in API response:", data)
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error)
     }
-    setLoading(false);
-  };
-  
+    setLoading(false)
+  }
+
+  const tabContent = {
+    general: "Describe any general symptoms or conditions.",
+    brain: "Focus on neurological symptoms or brain-related conditions.",
+    heart: "Describe cardiovascular symptoms or heart-related issues.",
+    lungs: "Detail respiratory symptoms or lung-related conditions.",
+    microscopic: "Describe symptoms related to cellular or microscopic issues.",
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
-      <h1 className="text-3xl font-bold mb-4">AI Image Generator</h1>
-      <input
-        type="text"
-        placeholder="Enter a prompt..."
-        className="p-2 rounded-lg text-black w-96"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-      />
-      <button
-        onClick={fetchData}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4"
-      >
-        Generate Image
-      </button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 p-4">
+      <div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl p-8">
+        <h1 className="text-3xl font-bold mb-6 text-blue-600 text-center">Medical Image Generator</h1>
+        <p className="text-gray-600 mb-6 text-center">
+          Describe your symptoms or condition to generate a medical image
+        </p>
 
-      {loading && <p className="mt-4">Loading...</p>}
+        <div className="mb-6">
+          <div className="flex justify-center space-x-4 mb-4">
+            {Object.entries({
+              general: <Activity />,
+              brain: <Brain />,
+              heart: <Heart />,
+              lungs: <Lungs />,
+              microscopic: <Microscope />,
+            }).map(([key, icon]) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`p-2 rounded-full ${
+                  activeTab === key ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-600"
+                } hover:bg-blue-400 hover:text-white transition-colors`}
+              >
+                {React.cloneElement(icon as React.ReactElement, { size: 24 })}
+              </button>
+            ))}
+          </div>
+          <p className="text-sm text-gray-600 text-center">{tabContent[activeTab as keyof typeof tabContent]}</p>
+        </div>
 
-      {responseData && (
-  <div className="mt-6 p-4 bg-gray-800 rounded-lg">
-    <img src={responseData} alt="Generated AI Image" className="rounded-lg" />
-  </div>
-)}
+        <input
+          type="text"
+          placeholder="Enter a description of your symptoms..."
+          className="w-full p-3 rounded-lg border border-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+        />
+        <button
+          onClick={fetchData}
+          className={`w-full bg-blue-500 text-white px-4 py-3 rounded-lg font-semibold transition-colors ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Generating..." : "Generate Medical Image"}
+        </button>
 
+        {responseData && (
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+            <img
+              src={responseData || "/placeholder.svg"}
+              alt="Generated Medical Image"
+              className="w-full rounded-lg shadow-md"
+            />
+          </div>
+        )}
+      </div>
     </div>
-  );
-};
+  )
+}
+
