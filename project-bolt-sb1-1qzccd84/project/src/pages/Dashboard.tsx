@@ -207,3 +207,62 @@ export function Dashboard() {
     </div>
   );
 }
+
+// "use client";
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+
+// export const Dashboard: React.FC = () => {
+//   const router = useRouter();
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+
+//   const handleSignIn = async () => {
+//     const res = await fetch("http://localhost:5000/api/signin", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ username, password }),
+//     });
+//     const data = await res.json();
+//     if (data.token) {
+//       alert("Login successful");
+//       router.push("/dashboard");
+//     } else {
+//       alert(data.message);
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-blue-300 text-white">
+//       <header className="w-full py-6 bg-blue-800 shadow-lg text-center text-3xl font-bold">MedicoCare</header>
+//       <div className="text-center p-8">
+//         <h1 className="text-5xl font-extrabold">Your Health, Our Priority</h1>
+//         <p className="mt-4 text-lg">Join MedicoCare and take control of your medical needs today.</p>
+//       </div>
+//       <div className="bg-white text-gray-800 p-6 rounded-lg shadow-xl w-96">
+//         <h2 className="text-2xl font-bold text-center mb-4">Sign In</h2>
+//         <input
+//           type="text"
+//           placeholder="Username"
+//           className="w-full p-3 border border-gray-300 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           value={username}
+//           onChange={(e) => setUsername(e.target.value)}
+//         />
+//         <input
+//           type="password"
+//           placeholder="Password"
+//           className="w-full p-3 border border-gray-300 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           value={password}
+//           onChange={(e) => setPassword(e.target.value)}
+//         />
+//         <button
+//           className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+//           onClick={handleSignIn}
+//         >
+//           Sign In
+//         </button>
+//         <p className="text-center mt-4 text-gray-600">New here? <a href="/signup" className="text-blue-600">Create an account</a></p>
+//       </div>
+//     </div>
+//   );
+// }
