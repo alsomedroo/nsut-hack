@@ -1,24 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 export const SignIn = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // Use Auth Context
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/signin", formData);
-      localStorage.setItem("token", response.data.token);
-      navigate("/dashboard");
-    } catch (error) {
-      setError("Invalid credentials. Try again.");
+      const response = await axios.post("http://localhost:5000/api/signin", formData);
+
+      if (response.data.token) {
+        login(response.data.token); // ✅ Ensure token exists
+        navigate("/dashboard", { replace: true });
+      } else {
+        setError("Invalid response. Please try again.");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Invalid credentials. Try again.");
     }
   };
 

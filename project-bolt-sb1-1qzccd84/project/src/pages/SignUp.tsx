@@ -1,23 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext"; // ✅ Import Auth Context
 
 export const SignUp = () => {
   const [formData, setFormData] = useState({ name: "", username: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ Use Auth Context
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/signup", formData);
-      navigate("/dashboard");
-    } catch (error) {
-      setError("Sign-up failed. Try again.");
+      const response = await axios.post("http://localhost:5000/api/signup", formData);
+
+      if (response.data.token) {
+        login(response.data.token); // ✅ Auto-login after signup
+        navigate("/dashboard", { replace: true });
+      } else {
+        setError("Signup successful, but no token received. Please log in.");
+        navigate("/"); // Redirect to login page
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Sign-up failed. Try again.");
     }
   };
 
