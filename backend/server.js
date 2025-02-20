@@ -152,6 +152,18 @@ app.post("/api/signin", async (req, res) => {
     }
   });
   
+  import { authenticateUser } from "./authMiddleware.js";
+
+app.get("/dashboard", authenticateUser, async (req, res) => {
+    try {
+        // Fetch user-specific data (if required)
+        res.json({ message: `Welcome to the dashboard, ${req.user.username}!` });
+    } catch (e) {
+        console.error("Dashboard error:", e);
+        res.status(500).json({ message: "Error: try again" });
+    }
+});
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;
