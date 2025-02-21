@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function authenticateUser(req, res, next) {
     const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer <token>"
-
+    console.log("Hii");
     if (!token) {
         return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
