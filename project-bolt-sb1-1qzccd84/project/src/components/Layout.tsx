@@ -21,7 +21,7 @@ export function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Patients', href: '/patients', icon: Users },
     { name: 'AI Diagnosis', href: '/diagnosis', icon: Brain },
     { name: 'Analytics', href: '/analytics', icon: LineChart },
